@@ -23,5 +23,10 @@
   },
   "keywords": [
     "__"
-  ]
+  ],
+  "dependencies": {
+    "elm": "0.19.1",
+    "esbuild": "^0.15.16",
+    "esbuild-plugin-elm": "^0.0.12"
+  }
 }

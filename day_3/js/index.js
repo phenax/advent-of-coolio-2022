@@ -1,6 +1,9 @@
 const mod = require('../index.node')
 const { promises: fs } = require('fs')
 
+const MM = require('../elm/Main.elm')
+console.log(MM)
+
 const loadInput = async () => {
   const contents = await fs.readFile('./input.txt', 'utf8')
   return processInput(contents.trim())
