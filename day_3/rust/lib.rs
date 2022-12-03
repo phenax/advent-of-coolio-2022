@@ -1,5 +1,5 @@
 use neon::prelude::*;
-use std::collections::HashSet;
+use std::{collections::HashSet, ops::Range};
 
 fn get_priority(c: char) -> u8 {
     // The worst solution
@@ -11,7 +11,7 @@ fn get_priority(c: char) -> u8 {
     }
 }
 
-fn solve(mut cx: FunctionContext) -> JsResult<JsNumber> {
+fn solve_1(mut cx: FunctionContext) -> JsResult<JsNumber> {
     let input = cx.argument::<JsArray>(0)?;
     let list = input.to_vec(&mut cx)?;
 
@@ -34,8 +34,38 @@ fn solve(mut cx: FunctionContext) -> JsResult<JsNumber> {
     Ok(cx.number(result))
 }
 
+fn solve_2(mut cx: FunctionContext) -> JsResult<JsNumber> {
+    let input = cx.argument::<JsArray>(0)?;
+    let list = input.to_vec(&mut cx)?;
+
+    let mut result: i32 = 0;
+    let mut chunk = vec![];
+    for (index, item) in (0..).zip(list) {
+        let input = item
+            .downcast_or_throw::<JsString, _>(&mut cx)?
+            .value(&mut cx);
+
+        chunk.push(input);
+        if (index + 1) % 3 == 0 {
+            let set = chunk
+                .iter()
+                .map(|s| s.chars().collect::<HashSet<char>>())
+                .reduce(|acc, item| acc.intersection(&item).copied().collect::<HashSet<_>>())
+                .unwrap();
+            for c in set {
+                let priority = get_priority(c);
+                result += priority as i32;
+            }
+            chunk.clear();
+        }
+    }
+
+    Ok(cx.number(result))
+}
+
 #[neon::main]
 fn main(mut cx: ModuleContext) -> NeonResult<()> {
-    cx.export_function("solve", solve)?;
+    cx.export_function("solve_1", solve_1)?;
+    cx.export_function("solve_2", solve_2)?;
     Ok(())
 }
