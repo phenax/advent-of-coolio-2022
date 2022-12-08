@@ -1,0 +1,7 @@
+services:
+  aoc_day_7:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./src:/source
