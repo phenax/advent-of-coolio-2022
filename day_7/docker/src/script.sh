@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 root="/example-root"
-rm -rf "$root" 2>/dev/null;
 rm /source/debug.log 2>/dev/null;
 
 debug() {
@@ -35,6 +34,8 @@ interpret_line() {
 }
 
 generate_filetree() {
+  rm -rf "$root" 2>/dev/null;
+
   while read line; do
     interpret_line "$line";
   done;
@@ -81,9 +82,37 @@ solve_1() {
 
 debug "@start"
 
+TOTAL_SPACE=70000000;
+SPACE_NEEDED=30000000;
+
+SIZE_OF_ROOT="$(get_directory_size "$root")"
+
+solve_2() {
+  local dir_name="$1";
+
+  local sizes=$(find "$dir_name" -type d | while read path; do
+    echo $(get_directory_size "$path");
+  done | sort --numeric-sort --reverse);
+
+  local space_needed=$(echo "$SPACE_NEEDED - $TOTAL_SPACE + $SIZE_OF_ROOT" | bc);
+
+  IFS='
+'
+  last_size=0
+  for size in $sizes; do
+    if test "$size" -lt "$space_needed"; then
+      break;
+    fi
+    last_size=$size
+  done
+
+  echo "$last_size"
+}
+
 generate_filetree < ./input.txt
 
-solve_1 "$root";
+echo "Result 1: $(solve_1 "$root")";
+echo "Result 2: $(solve_2 "$root")";
 
-cat /source/debug.log;
+# cat /source/debug.log;
 
