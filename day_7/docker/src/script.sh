@@ -4,6 +4,10 @@ root="/example-root"
 rm -rf "$root" 2>/dev/null;
 rm /source/debug.log 2>/dev/null;
 
+debug() {
+  echo "$@" >> /source/debug.log
+}
+
 # :: String -> ()
 change_dir() {
   mkdir -p "$1";
@@ -30,23 +34,23 @@ interpret_line() {
   esac;
 }
 
-parse_input() {
+generate_filetree() {
   while read line; do
     interpret_line "$line";
   done;
 }
 
+# :: String -> Int
 get_directory_size() {
   local dir_name="$1";
 
+  local ts=0;
   local total_size=$(
-    find "$dir_name" -exec du -ab -d1 {} \; | while read line; do
+    find "$dir_name" -type f -exec du -ab -d0 {} \; | while read line; do
       local path=$(echo "$line" | awk '{print $2}');
       local size=$(echo "$line" | awk '{print $1}')
 
-      if [[ "$dir_name" != "$path" ]] && [[ -d "$path" ]]; then
-        size=$(get_directory_size "$path");
-      fi;
+      # debug ":::${path} = ${size:-0}--${ts:-0}"
 
       ts=$(echo "${ts:-0} + ${size:-0}" | bc)
       echo "$ts"
@@ -59,20 +63,15 @@ get_directory_size() {
 solve_1() {
   local dir_name="$1";
 
+  local ts=0;
   echo $(
     find "$dir_name" -type d | while read path; do
       if [[ "$dir_name" != "$path" ]]; then
-        echo "$path"  >> /source/debug.log
         local size=$(get_directory_size "$path");
-
-        local tsub=$(solve_1 "$path");
-        ts=$(echo "${ts:-0} + ${tsub:-0}" | bc);
 
         if test $size -lt 100000; then
           ts=$(echo "${ts:-0} + ${size:-0}" | bc);
         fi
-
-        echo ":::::${size:-0}--${ts:-0}:::::::${tsub:-0}" >> /source/debug.log;
 
         echo "$ts";
       fi
@@ -80,7 +79,11 @@ solve_1() {
   );
 }
 
-parse_input < ./input.txt
+debug "@start"
+
+generate_filetree < ./input.txt
 
 solve_1 "$root";
+
+cat /source/debug.log;
 
