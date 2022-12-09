@@ -1,0 +1,6 @@
+name = "aoc_d8"
+version = "0.1.0"
+target = "javascript"
+
+[dependencies]
+gleam_stdlib = "~> 0.10"
