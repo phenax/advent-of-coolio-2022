@@ -44,8 +44,46 @@ defmodule Main do
       { new_cycle, new_x_register, new_sum, index + 1 }
     end)
   end
+
+  def solve_2() do
+    instructions = read_input()
+    init_state = { 1, 1 }
+    instructions |> List.foldl(init_state, fn inst, {cycle, x_register} ->
+      cycle_incr = case inst do
+        {:addx, _} -> 2
+        _ -> 1
+      end
+
+      draw_cell = fn (cycle, x_register) ->
+        pixel_position = Integer.mod(cycle - 1, 40)
+
+        if x_register >= pixel_position - 1 && x_register <= pixel_position + 1 do
+          IO.write(:stdio, "#")
+        else
+          IO.write(:stdio, ".")
+        end
+
+        if pixel_position + 1 == 40 do
+          IO.write(:stdio, "\n")
+        end
+      end
+
+      (0..cycle_incr - 1) |> Enum.map(fn (cycle_incr) ->
+        draw_cell.(cycle + cycle_incr, x_register)
+      end)
+
+      x_register = case inst do
+        {:addx, n} -> x_register + n
+        _ -> x_register
+      end
+
+      { cycle + cycle_incr, x_register }
+    end)
+  end
 end
 
 
-IO.inspect(Main.solve_1())
+IO.puts("-------------------------------------------------------")
+
+Main.solve_2()
 
