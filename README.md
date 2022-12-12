@@ -11,3 +11,6 @@ Solving it live on [twitch.tv/EdibleMonad](https://twitch.tv/EdibleMonad)
 * Day 6 - [RegEx](./day_6/regex.js) + [Type-level Typescript](./day_6/main.ts)
 * Day 7 - [Bash+coreutils using the file system as our tree](./day_7/docker/src/script.sh)
 * Day 8 - [Gleam.run](./day_8/src/aoc_d8.gleam)
+* Day 9 - [Rust](./day_9/src/main.rs)
+* Day 10 - [Elixir](./day_10/main.exs)
+* Day 11 - ???
