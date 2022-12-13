@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "ocaml-language-server": "^1.0.35"
+  }
+}
