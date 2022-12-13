@@ -13,4 +13,4 @@ Solving it live on [twitch.tv/EdibleMonad](https://twitch.tv/EdibleMonad)
 * Day 8 - [Gleam.run](./day_8/src/aoc_d8.gleam)
 * Day 9 - [Rust](./day_9/src/main.rs)
 * Day 10 - [Elixir](./day_10/main.exs)
-* Day 11 - ???
+* Day 11 - [Racket](./day_11/main.rkt)
