@@ -18,4 +18,5 @@ Solving it live on [twitch.tv/EdibleMonad](https://twitch.tv/EdibleMonad)
 * Day 13 - [jq](./day_13/main.jq)
 * Day 14 - [Haskell](./day_14/app/Main.hs)
 * Day 15 - [Koka](./day_15/main.kk)
-* Day 16 - ??
+* Day 16 - [Unison](./day_16/main.u)
+* Day 17 - ??

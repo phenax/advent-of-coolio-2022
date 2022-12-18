@@ -1,0 +1,100 @@
+use base
+-- https://dreampuf.github.io/GraphvizOnline/#digraph%20Grrr%20%7B%0A%20%20AA%20-%3E%20%7BDD%20II%20BB%7D%20%20%5Blabel%20%3D%20%220%22%5D%0A%20%20BB%20-%3E%20%7BCC%20AA%7D%20%20%5Blabel%20%3D%20%2213%22%5D%0A%20%20CC%20-%3E%20%7BDD%20BB%7D%20%20%5Blabel%20%3D%20%222%22%5D%0A%20%20DD%20-%3E%20%7BCC%20AA%20EE%7D%20%20%5Blabel%20%3D%20%2220%22%5D%0A%20%20EE%20-%3E%20%7BFF%20DD%7D%20%20%5Blabel%20%3D%20%223%22%5D%0A%20%20FF%20-%3E%20%7BEE%20GG%7D%20%20%5Blabel%20%3D%20%220%22%5D%0A%20%20GG%20-%3E%20%7BFF%20HH%7D%20%20%5Blabel%20%3D%20%220%22%5D%0A%20%20HH%20-%3E%20GG%20%20%5Blabel%20%3D%20%2222%22%5D%0A%20%20II%20-%3E%20%7BAA%20JJ%7D%20%20%5Blabel%20%3D%20%220%22%5D%0A%20%20JJ%20-%3E%20II%20%20%5Blabel%20%3D%20%2221%22%5D%0A%7D%0A
+
+readLines : Handle -> {IO, Exception} List Text
+readLines hdl =
+  use List ++
+  if isFileEOF hdl
+    then []
+    else (io.getLine hdl +: readLines hdl)
+
+structural type Valve = Valve Text
+
+unique type Tunnel = Tunnel Valve Nat (List Valve)
+
+getName : Tunnel -> Valve
+getName t =
+  (Tunnel name _ _) = t
+  name
+
+maybePluralP : Text -> Pattern Text
+maybePluralP txt =
+  use Text ++
+  or (literal (txt ++ "s")) (literal txt)
+
+tunnelP : Pattern Text
+tunnelP = join [
+  literal "Valve ",
+  capture (many letter),
+  literal " has flow rate=",
+  capture (many digit),
+  maybePluralP "; tunnel",
+  space,
+  maybePluralP "lead",
+  space,
+  maybePluralP "to valve",
+  space,
+  sepMany (join [chars ",", space]) (capture <| many letter),
+]
+
+parseTunnel : Text -> {Exception} Tunnel
+parseTunnel ins =
+  match Pattern.run tunnelP ins with
+    Some (name +: (flowRateStr +: tunnelsTo), _) -> 
+      flowRate =
+        parse 10 flowRateStr
+          |> Optional.map Natural.toNat
+          |> Optional.orDefault 0
+      Tunnel (Valve name) flowRate (map Valve tunnelsTo)
+    None ->
+      Exception.raise (failure "Parser error" ins)
+
+solve1 : Map Valve Tunnel -> {STM} ((Set Valve, Nat, Valve) -> {STM} Nat)
+solve1 tunnels =
+  var = TVar.new Map.empty
+
+  solve1Impl input =
+    (opened, minutesLeft, valve) = input
+    Debug.trace "foobar" (minutesLeft, valve, opened |> Set.toList)
+    match TVar.read var |> Map.get input with
+      Some result -> result
+      None ->
+        res = if minutesLeft <= 1 then 0
+          else match Map.get valve tunnels with
+            Some (Tunnel v rate nextValves) ->
+              walkToNextValve valve =
+                -- Debug.trace "---- next" (minutesLeft, v, valve)
+                [ solve1Impl (opened, minutesLeft - 1, valve) ] ++
+                if Set.contains valve opened then [] else [
+                  rate * (minutesLeft - 2) +
+                    (solve1Impl (Set.insert valve opened, minutesLeft - 2, valve))
+                ]
+              press =
+                nextValves
+                  |> List.reverse
+                  |> List.flatMap walkToNextValve
+                  |> List.maximum
+                  |> Optional.orDefault 0
+              Debug.trace "ooooooooo press" (valve, press)
+              press
+            None -> 0
+        TVar.modify var (Map.insert input res)
+        res
+
+  solve1Impl
+
+main : '{IO, Exception} ()
+main _ =
+  f = openFile (FilePath "./input.txt") Read
+  finally ((f -> '(closeFile f)) f)
+    do
+      tunnels = readLines f |> map parseTunnel
+      tunnelMap = tunnels |> List.map (t -> (getName t, t)) |> Map.fromList
+      printLine "------------------------"
+      res = STM.atomically '(solve1 tunnelMap (Set.empty, 5, Valve "AA"))
+      Debug.trace "Pressure" res
+
+  printLine "ENDD"
+
+---
+---
