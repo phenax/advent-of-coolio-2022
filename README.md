@@ -19,4 +19,7 @@ Solving it live on [twitch.tv/EdibleMonad](https://twitch.tv/EdibleMonad)
 * Day 14 - [Haskell](./day_14/app/Main.hs)
 * Day 15 - [Koka](./day_15/main.kk)
 * Day 16 - [Unison](./day_16/main.u)
-* Day 17 - ??
+* Day 17 - Not doing it
+* Day 18 - [Nim](./day_18/main.nim)
+* Day 19 - Fuck you. I'm tired.
+* Day 20 - [Charm](./day_20/main.ch)
