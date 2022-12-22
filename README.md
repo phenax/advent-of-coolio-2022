@@ -23,3 +23,5 @@ Solving it live on [twitch.tv/EdibleMonad](https://twitch.tv/EdibleMonad)
 * Day 18 - [Nim](./day_18/main.nim)
 * Day 19 - Fuck you. I'm tired.
 * Day 20 - [Charm](./day_20/main.ch)
+* Day 21 - [F#](./day_21/Program.fs)
+* Day 22 - ??
