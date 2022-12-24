@@ -5,7 +5,7 @@ Solving it live on [twitch.tv/EdibleMonad](https://twitch.tv/EdibleMonad)
 
 * Day 1 - [BQN (APL)](./day_1/main.bqn)
 * Day 2 - [Prolog](./day_2/main.pl)
-* Day 3 - FFI hell (ended up with [rust](./day_3/rust/lib.rs))
+* Day 3 - [ffi hell didn't go well so rusty](./day_3/rust/lib.rs)
 * Day 4 - [Desmos](https://www.desmos.com/calculator/2d77dhjr63) + [Type-level Typescript](./day_4/main.ts)
 * Day 5 - [Crystal lang](./day_5/main.cr) + [Type-level Typescript](./day_5/main.ts)
 * Day 6 - [RegEx](./day_6/regex.js) + [Type-level Typescript](./day_6/main.ts)
@@ -25,3 +25,4 @@ Solving it live on [twitch.tv/EdibleMonad](https://twitch.tv/EdibleMonad)
 * Day 20 - [Charm](./day_20/main.ch)
 * Day 21 - [F#](./day_21/Program.fs)
 * Day 22 - ??
+* Day 23 - [Scala](./day_23/src/main/scala/example/Main.scala)
